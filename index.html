@@ -1,204 +1,306 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مشغل القنوات الرياضية - العبودي TV</title>
-    
-    <!-- مكتبات المشغل وفك التشفير -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>العبودي TV</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&display=swap" rel="stylesheet">
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/mpegts.js@latest/dist/mpegts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
 
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+<style>
+:root {
+  --bg-1: #0a0a12;
+  --bg-2: #141622;
+  --yellow: #ffcc00;
+  --text: #ffffff;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+body {
+  margin: 0;
+  font-family: 'Almarai', sans-serif;
+  background: var(--bg-1);
+  color: var(--text);
+}
 
-        .header h1 {
-            font-size: 1.8rem;
-            color: #38bdf8;
-            margin-bottom: 10px;
-        }
+header {
+  position: sticky;
+  top: 0;
+  background: #10121a;
+  border-bottom: 2px solid var(--yellow);
+  padding: 12px 15px;
+  text-align: center;
+  z-index: 1000;
+}
 
-        .telegram-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #0088cc;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
-        }
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--yellow);
+}
 
-        .telegram-btn:hover {
-            background-color: #0077b5;
-            transform: translateY(-2px);
-        }
+#group-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 10px;
+  background: #12141c;
+  white-space: nowrap;
+}
 
-        .main-container {
-            width: 100%;
-            max-width: 900px;
-            background-color: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
+#group-tabs::-webkit-scrollbar { height: 4px; }
+#group-tabs::-webkit-scrollbar-thumb { background: var(--yellow); }
 
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background-color: #000;
-        }
+.group-btn {
+  background: #1c1e29;
+  color: #fff;
+  border: 1px solid rgba(255, 204, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+}
 
-        .artplayer-app {
-            width: 100%;
-            height: 100%;
-        }
+.group-btn.active {
+  background: var(--yellow);
+  color: #000;
+  font-weight: bold;
+  border-color: var(--yellow);
+}
 
-        .channels-section {
-            padding: 20px;
-        }
+.channels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  padding: 12px;
+}
 
-        .channels-title {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #94a3b8;
-        }
+.channel-card {
+  background: var(--bg-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 10px 5px;
+  text-align: center;
+  cursor: pointer;
+}
 
-        .channels-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 10px;
-        }
+.channel-card img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
 
-        .channel-btn {
-            background-color: #334155;
-            color: #f8fafc;
-            border: 2px solid transparent;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
+.chan-title {
+  font-size: 11px;
+  font-weight: 700;
+  height: 28px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #eee;
+}
 
-        .channel-btn:hover {
-            background-color: #475569;
-        }
+.player-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 10px;
+}
 
-        .channel-btn.active {
-            background-color: #0284c7;
-            border-color: #38bdf8;
-        }
-    </style>
+.player-box {
+  width: 100%;
+  max-width: 800px;
+  background: #000;
+  border: 1px solid var(--yellow);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #181922;
+  padding: 10px 14px;
+}
+
+.player-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.artplayer-app {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.status-box {
+  text-align: center;
+  padding: 40px 15px;
+  color: var(--yellow);
+  font-size: 14px;
+}
+</style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>مشغل البث المباشر</h1>
-        <a href="https://t.me/stlaet1" target="_blank" class="telegram-btn">
-            انضم إلى قناة العبودي TV
-        </a>
+<header>
+  <div class="logo">العبودي TV</div>
+</header>
+
+<div id="group-tabs"></div>
+<div id="statusMsg" class="status-box">جاري الاتصال بالسيرفر وجلب القنوات...</div>
+<div class="channels-grid" id="channelsGrid"></div>
+
+<div class="player-modal" id="playerModal">
+  <div class="player-box">
+    <div class="player-header">
+      <span class="player-title" id="pTitle">مشغل البث</span>
+      <button class="close-btn" onclick="closePlayer()">&times;</button>
     </div>
+    <div class="artplayer-app" id="artplayer"></div>
+  </div>
+</div>
 
-    <div class="main-container">
-        <div class="video-wrapper">
-            <div class="artplayer-app"></div>
-        </div>
+<script>
+const m3uUrl = "https://go-tv.site/get.php?username=gotv&password=12345&type=m3u_plus";
+let art = null;
 
-        <div class="channels-section">
-            <div class="channels-title">اختر القناة:</div>
-            <div class="channels-grid">
-                <button class="channel-btn active" onclick="changeChannel('https://go-tv.site/live/gotv/12345/41.m3u8', this)">بين سبورت 1</button>
-                <button class="channel-btn" onclick="changeChannel('https://go-tv.site/live/gotv/12345/42.m3u8', this)">بين سبورت 2</button>
-                <button class="channel-btn" onclick="changeChannel('https://go-tv.site/live/gotv/12345/43.m3u8', this)">بين سبورت 3</button>
-                <button class="channel-btn" onclick="changeChannel('https://go-tv.site/live/gotv/12345/44.m3u8', this)">بين سبورت 4</button>
-                <button class="channel-btn" onclick="changeChannel('https://go-tv.site/live/gotv/12345/45.m3u8', this)">بين سبورت 5</button>
-            </div>
-        </div>
-    </div>
+async function loadChannels() {
+  const status = document.getElementById("statusMsg");
+  const proxy = "https://corsproxy.io/?" + encodeURIComponent(m3uUrl);
 
-    <script>
-        const WORKER_URL = "https://abodirhom.hsinnzaer5.workers.dev";
+  try {
+    const res = await fetch(proxy);
+    if (!res.ok) throw new Error("تعذر الوصول للسيرفر");
+    const data = await res.text();
+    parseAndRender(data);
+  } catch (err) {
+    status.innerHTML = "حدث خطأ أثناء جلب القنوات، تأكد من فتح الصفحة عبر رابط إنترنت (HTTP/HTTPS) وليس من مسار التخزين الداخلي.";
+  }
+}
 
-        function getProxiedUrl(rawUrl) {
-            return `${WORKER_URL}/?url=${encodeURIComponent(rawUrl)}`;
+function parseAndRender(data) {
+  document.getElementById("statusMsg").style.display = "none";
+  const lines = data.split('\n');
+  const channels = [];
+  let current = null;
+
+  for (let line of lines) {
+    line = line.trim();
+    if (line.startsWith('#EXTINF:')) {
+      const name = line.split(',').pop() || "قناة";
+      const logo = (line.match(/tvg-logo="(.*?)"/) || [])[1] || "";
+      const group = (line.match(/group-title="(.*?)"/) || [])[1] || "عام";
+      current = { name, logo, group };
+    } else if (line.startsWith('http') && current) {
+      current.url = line;
+      channels.push(current);
+      current = null;
+    }
+  }
+
+  const groups = [...new Set(channels.map(c => c.group))];
+  const tabs = document.getElementById("group-tabs");
+  tabs.innerHTML = "";
+
+  groups.forEach((group, i) => {
+    const btn = document.createElement("button");
+    btn.className = "group-btn";
+    btn.textContent = group;
+    btn.onclick = () => {
+      document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      displayChannels(channels.filter(c => c.group === group));
+    };
+    tabs.appendChild(btn);
+    if (i === 0) btn.click();
+  });
+}
+
+function displayChannels(filtered) {
+  const grid = document.getElementById("channelsGrid");
+  grid.innerHTML = "";
+
+  filtered.forEach(ch => {
+    const card = document.createElement("div");
+    card.className = "channel-card";
+    card.innerHTML = `
+      <img src="${ch.logo || 'https://via.placeholder.com/80/000/ffcc00?text=TV'}" onerror="this.src='https://via.placeholder.com/80/000/ffcc00?text=TV'">
+      <div class="chan-title">${ch.name}</div>
+    `;
+    card.onclick = () => openPlayer(ch.url, ch.name);
+    grid.appendChild(card);
+  });
+}
+
+function openPlayer(url, title) {
+  document.getElementById("pTitle").textContent = title;
+  document.getElementById("playerModal").style.display = "flex";
+
+  if (art) art.destroy();
+
+  art = new Artplayer({
+    container: '#artplayer',
+    url: url,
+    isLive: true,
+    autoplay: true,
+    fullscreen: true,
+    theme: '#ffcc00',
+    type: url.includes('.m3u8') ? 'm3u8' : (url.includes('.ts') ? 'ts' : 'auto'),
+    customType: {
+      m3u8: function(video, url, artInstance) {
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(url);
+          hls.attachMedia(video);
+          artInstance.hls = hls;
+          artInstance.on('destroy', () => hls.destroy());
+        } else {
+          video.src = url;
         }
-
-        function playHls(video, url, art) {
-            if (Hls.isSupported()) {
-                if (art.hls) art.hls.destroy();
-                const hls = new Hls({
-                    enableWorker: true,
-                    lowLatencyMode: true,
-                    backBufferLength: 60,
-                    maxBufferLength: 30,
-                    maxMaxBufferLength: 600,
-                    maxBufferSize: 60 * 1000 * 1000,
-                    manifestLoadingTimeOut: 10000,
-                    fragLoadingTimeOut: 20000
-                });
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                art.hls = hls;
-                art.on('destroy', () => hls.destroy());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-            }
+      },
+      ts: function(video, url, artInstance) {
+        if (mpegts.isSupported()) {
+          const player = mpegts.createPlayer({ type: 'mse', isLive: true, url: url });
+          player.attachMediaElement(video);
+          player.load();
+          player.play();
+          artInstance.tsPlayer = player;
+          artInstance.on('destroy', () => player.destroy());
         }
+      }
+    }
+  });
+}
 
-        const initialChannelUrl = 'https://go-tv.site/live/gotv/12345/41.m3u8';
+function closePlayer() {
+  document.getElementById("playerModal").style.display = "none";
+  if (art) {
+    art.destroy();
+    art = null;
+  }
+}
 
-        const art = new Artplayer({
-            container: '.artplayer-app',
-            url: getProxiedUrl(initialChannelUrl),
-            type: 'm3u8',
-            customType: {
-                m3u8: playHls,
-            },
-            isLive: true,
-            autoplay: true,
-            muted: true,
-            fullscreen: true,
-            fullscreenWeb: true,
-            volume: 0.8,
-            pip: true,
-            setting: true,
-            airplay: true,
-            theme: '#38bdf8'
-        });
-
-        function changeChannel(rawUrl, buttonElement) {
-            const buttons = document.querySelectorAll('.channel-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-
-            art.switchUrl(getProxiedUrl(rawUrl));
-        }
-    </script>
+loadChannels();
+</script>
 </body>
 </html>
