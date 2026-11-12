@@ -1,7 +1,7 @@
 
 {
-  "maintenance": true,
-  "title": "عائلتنا TV",
+  "maintenance": false,
+  "title": "تود TV",
   "message": "التطبيق مقفول للصيانة",
   "subtitle": "نعتذر عن الإزعاج، نعمل حالياً على إجراء تحديثات وصيانة للتطبيق. يرجى المحاولة لاحقاً.",
   "show_icon": true,
