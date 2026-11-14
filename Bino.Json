@@ -1,0 +1,19 @@
+{
+  "app": "Beno B",
+  "type": "m3u",
+  "enabled": true,
+  "auto_sync": true,
+  "sync_on_app_open": true,
+
+  "playlist": {
+    "url": "http://a.norzro.cfd/get.php?username=8667593288&password=2505245402&type=m3u_plus",
+    "format": "m3u",
+    "enabled": true
+  },
+
+  "sections": {
+    "live_tv": true,
+    "movies": true,
+    "series": true
+  }
+}
