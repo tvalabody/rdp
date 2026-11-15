@@ -1,6 +1,6 @@
 {
   "update": {
-    "enabled": true,
+    "enabled": false,
     "force_update": true,
     "version": "6.3.1",
     "versionCode": 27,
