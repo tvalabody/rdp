@@ -1,0 +1,21 @@
+{
+  "update": {
+    "enabled": true,
+    "force_update": true,
+    "version": "6.3.1",
+    "versionCode": 27,
+    "title": "تحديث إجباري جديد",
+    "message": "يرجى تحديث التطبيق إلى أحدث إصدار لمواصلة الاستخدام والاستفادة من التحسينات الجديدة.",
+    "download_url": "ضع_رابط_APK_هنا",
+    "button_text": "تحديث الآن",
+    "telegram": {
+      "enabled": true,
+      "title": "انضم إلى قناتنا الرسمية",
+      "message": "تابع قناتنا للحصول على التحديثات والأخبار الجديدة.",
+      "button_text": "انضم إلى التليجرام",
+      "url": "https://t.me/stlaet1"
+    },
+    "cancelable": false,
+    "show_later": false
+  }
+}
